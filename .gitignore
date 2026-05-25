@@ -1,0 +1,17 @@
+# Node
+node/
+*.log
+
+# OpenClaw (will be bundled)
+openclaw/
+
+# Config (user-specific, don't track)
+.openclaw/
+
+# Temp
+*.tmp
+.DS_Store
+
+# Build output
+dist/
+build/
