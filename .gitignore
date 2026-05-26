@@ -1,17 +1,30 @@
-# Node
-node/
-*.log
-
-# OpenClaw (will be bundled)
-openclaw/
-
-# Config (user-specific, don't track)
-.openclaw/
-
-# Temp
-*.tmp
+# OS and editor junk
 .DS_Store
+Thumbs.db
+Desktop.ini
 
-# Build output
-dist/
-build/
+# U盘运行时数据（不跟踪）
+.openclaw/
+.system/logs/
+.startup.log
+.error.log
+
+# Node.js large binaries（不需要提交，每个U盘自己带）
+node/
+node_modules/
+
+# 已编译的可执行文件
+*.exe
+
+# 临时文件
+*.tmp
+*.bak
+*.swp
+
+# 快速入门指南 PDF 不进 git（用户本地生成）
+*.pdf
+
+# 开发者测试文件
+*副本*
+*backup*
+*last-good*

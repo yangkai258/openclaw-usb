@@ -1,0 +1,21 @@
+{
+  "version": "1.0.0",
+  "description": "OpenClaw 日常版出厂默认配置",
+  "openclaw": {
+    "theme": "auto",
+    "language": "zh-CN",
+    "port": 8080
+  },
+  "models": {
+    "default": "deepseek-ai/DeepSeek-V4-Flash",
+    "providers": {}
+  },
+  "ui": {
+    "layout": "default",
+    "compact": false
+  },
+  "safety": {
+    "auto_backup": true,
+    "backup_interval_minutes": 30
+  }
+}
