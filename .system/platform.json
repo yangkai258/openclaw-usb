@@ -1,0 +1,24 @@
+{
+  "version": "1.0.0",
+  "platform": {
+    "baseUrl": "http://3295b30e.r8.cpolar.cn",
+    "apiPath": "/v1"
+  },
+  "openclaw": {
+    "theme": "auto",
+    "language": "zh-CN",
+    "port": 8080
+  },
+  "models": {
+    "default": "deepseek-ai/DeepSeek-V4-Flash",
+    "providers": {}
+  },
+  "ui": {
+    "layout": "default",
+    "compact": false
+  },
+  "safety": {
+    "auto_backup": true,
+    "backup_interval_minutes": 30
+  }
+}

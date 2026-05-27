@@ -5,7 +5,7 @@
 ## 目录结构
 
 ```
-D:\OpenClaw_Portable\                    ← 根目录（5个可见文件）
+D:\OpenClaw_Portable\                    ← 根目录（可见文件）
 │
 ├── OpenClaw.exe                         ← ⭐ 主程序（Go双模启动器）
 ├── 激活账号.exe                          ← 激活账号工具
@@ -22,17 +22,50 @@ D:\OpenClaw_Portable\                    ← 根目录（5个可见文件）
     ├── .openclaw\                      ← 用户配置
     │   └── openclaw.json
     └── .system\
+        ├── platform.json              ← ⭐ 平台地址配置（换域名只改这里）
+        ├── version.json                ← 版本信息
         ├── openclaw_normal\             ← 日常版配置
         │   └── config_default.json
-        ├── openclaw_rescue\             ← 救援版工具
+        ├── openclaw_rescue\            ← 救援版工具源码
         │   ├── config_default.json
-        │   ├── launcher.go             ← 救援模式启动器源码
-        │   ├── main.py                  ← 急救脚本
-        │   ├── quit.go                  ← 退出工具源码
-        │   └── 激活账号.go               ← 激活工具源码
+        │   ├── launcher.go
+        │   ├── main.py
+        │   ├── quit.go
+        │   └── 激活账号.go
         └── logs\                        ← 日志目录
             ├── startup.log
             └── error.log
+```
+
+## 核心配置文件
+
+### `.system/platform.json`
+
+平台地址的唯一真相来源（换域名只改这里）：
+
+```json
+{
+  "platform": {
+    "baseUrl": "http://3295b30e.r8.cpolar.cn",
+    "apiPath": "/v1"
+  }
+}
+```
+
+所有用到平台地址的地方都会读取这个文件：
+- `setup.js` 激活页面
+- `openclaw.json` 中的 baseUrl
+
+### `.system/version.json`
+
+版本信息：
+
+```json
+{
+  "version": "1.0.0",
+  "build": "2026-05-27",
+  "description": "OpenClaw U盘便携版"
+}
 ```
 
 ## 设计理念
@@ -60,7 +93,7 @@ D:\OpenClaw_Portable\                    ← 根目录（5个可见文件）
 运行"彻底退出软件.exe"
   → 弹出确认对话框
   → 确定 → kill 所有 node.exe 进程
-  → 弹出"可以安全拔U盘了" → 用户拔盘
+  → 检测是否还有残留 → 弹窗提示是否可以拔盘
 ```
 
 ### 出厂重置流程
@@ -99,26 +132,9 @@ pyinstaller --onefile --console --name "急救与重置工具.exe" main.py
 
 ### API Key 来源
 
-平台地址（中转站）：`http://3295b30e.r8.cpolar.cn`
+用户在平台注册账号 → 充值获得 Token 额度 → 在后台获取 API Key → 填入激活页面
 
-用户需要：
-1. 打开平台注册账号
-2. 充值获得 Token 额度
-3. 在后台获取 API Key
-4. 填入激活页面
-
-## 文件说明
-
-### setup.js
-
-激活页面服务器（Node.js 内置 http.server）：
-- `GET /` → 激活页面 HTML
-- `POST /save-config` → 保存 API Key 到配置
-- `GET /start` → 触发 OpenClaw 启动
-
-### config_default.json
-
-出厂默认配置，launcher.go 和 main.py 都依赖它做重置。
+平台地址在 `.system/platform.json` 中配置。
 
 ## 商业模式
 

@@ -3,8 +3,26 @@ const fs = require('fs');
 const path = require('path');
 const { exec } = require('child_process');
 
-const CONFIG_FILE = path.join(__dirname, '.openclaw', 'openclaw.json');
+const ROOT_DIR = __dirname;
+const CONFIG_FILE = path.join(ROOT_DIR, '.openclaw', 'openclaw.json');
+const PLATFORM_FILE = path.join(ROOT_DIR, '.system', 'platform.json');
 const PORT = 8080;
+
+// Load platform config (base URL from single source of truth)
+function getPlatformConfig() {
+    try {
+        return JSON.parse(fs.readFileSync(PLATFORM_FILE, 'utf8'));
+    } catch (e) {
+        return null;
+    }
+}
+
+function getBaseUrl() {
+    const cfg = getPlatformConfig();
+    return cfg && cfg.platform && cfg.platform.baseUrl
+        ? cfg.platform.baseUrl
+        : 'http://3295b30e.r8.cpolar.cn'; // fallback
+}
 
 function readConfig() {
     try {
@@ -25,14 +43,14 @@ function hasValidApiKey(config) {
     for (const key in providers) {
         const apiKey = providers[key].apiKey;
         if (!apiKey || apiKey === '***' || apiKey.trim() === '') continue;
-        // Reject placeholder values
         if (apiKey === 'USER_GETS_OWN_KEY' || apiKey.length < 10) continue;
         return true;
     }
     return false;
 }
 
-const HTML = `<!DOCTYPE html>
+function buildHtml(baseUrl) {
+    return `<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -71,7 +89,7 @@ input[type="text"]:focus { border-color: #e94560; }
 <div class="notice">
 <p><strong>还没账号？先注册：</strong></p>
 <ol>
-<li>打开 <a href="http://3295b30e.r8.cpolar.cn/" target="_blank">http://3295b30e.r8.cpolar.cn/</a></li>
+<li>打开 <a href="${baseUrl}/" target="_blank">${baseUrl}/</a></li>
 <li>注册账号并登录</li>
 <li>充值获得Token额度</li>
 <li>在后台获取你的API Key</li>
@@ -89,6 +107,7 @@ input[type="text"]:focus { border-color: #e94560; }
 <p class="tip">API Key验证通过后会自动启动OpenClaw</p>
 </div>
 <script>
+var BASE_URL = ${JSON.stringify(baseUrl)};
 function $(id) { return document.getElementById(id); }
 function showError(msg) { var el=$('error'); el.textContent=msg; el.style.display='block'; $('success').style.display='none'; }
 function showSuccess(msg) { var el=$('success'); el.textContent=msg; el.style.display='block'; $('error').style.display='none'; }
@@ -98,10 +117,10 @@ async function validateKey() {
     if (!apiKey) { showError('请输入API Key'); return; }
     hideMsg(); $('validateBtn').disabled=true; $('spinner').style.display='block';
     try {
-        var r = await fetch('http://3295b30e.r8.cpolar.cn/v1/models?key='+encodeURIComponent(apiKey));
+        var r = await fetch(BASE_URL + '/v1/models?key='+encodeURIComponent(apiKey));
         if (r.ok) {
             showSuccess('验证成功！正在启动...');
-            var saveR = await fetch('/save-config', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({apiKey})});
+            var saveR = await fetch('/save-config', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({apiKey, baseUrl: BASE_URL + '/v1'})});
             var ok = await saveR.json();
             if (ok.ok) {
                 setTimeout(function() { window.location.href='/start'; }, 1500);
@@ -116,20 +135,22 @@ document.getElementById('apiKey').addEventListener('keypress', function(e) { if(
 </script>
 </body>
 </html>`;
+}
 
-function saveConfigApiKey(apiKey, callback) {
+function saveConfigApiKey(apiKey, baseUrl, callback) {
     const config = readConfig() || {};
     if (!config.models) config.models = {};
     if (!config.models.providers) config.models.providers = {};
     if (!config.models.providers['token-platform']) {
         config.models.providers['token-platform'] = {
-            baseUrl: 'http://3295b30e.r8.cpolar.cn/v1',
+            baseUrl: baseUrl,
             apiKey: apiKey,
             api: 'openai-chat',
             models: [{ id: 'deepseek-ai/DeepSeek-V4-Flash', name: 'DeepSeek V4 Flash' }]
         };
     } else {
         config.models.providers['token-platform'].apiKey = apiKey;
+        config.models.providers['token-platform'].baseUrl = baseUrl;
     }
     try {
         writeConfig(config);
@@ -140,10 +161,9 @@ function saveConfigApiKey(apiKey, callback) {
 }
 
 function startOpenClaw() {
-    const exePath = __dirname;
-    const nodeExe = path.join(exePath, 'node', 'node.exe');
-    const openclawPath = path.join(exePath, 'openclaw', 'openclaw.mjs');
-    exec(`"${nodeExe}" "${openclawPath}" gateway start`, { cwd: exePath }, (err) => {
+    const nodeExe = path.join(ROOT_DIR, 'node', 'node.exe');
+    const openclawPath = path.join(ROOT_DIR, 'openclaw', 'openclaw.mjs');
+    exec(`"${nodeExe}" "${openclawPath}" gateway start`, { cwd: ROOT_DIR }, (err) => {
         if (err) console.error('Failed to start OpenClaw:', err);
     });
 }
@@ -152,14 +172,14 @@ const server = http.createServer((req, res) => {
     const url = req.url;
     if (url === '/' || url === '/setup') {
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-        res.end(HTML);
+        res.end(buildHtml(getBaseUrl()));
     } else if (url === '/save-config') {
         let body = '';
         req.on('data', d => body += d);
         req.on('end', () => {
             try {
-                const { apiKey } = JSON.parse(body);
-                saveConfigApiKey(apiKey, (ok) => {
+                const { apiKey, baseUrl } = JSON.parse(body);
+                saveConfigApiKey(apiKey, baseUrl, (ok) => {
                     res.writeHead(200, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({ ok }));
                 });
