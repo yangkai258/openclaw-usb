@@ -13,16 +13,16 @@ Desktop.ini
 node/
 node_modules/
 
-# 已编译的可执行文件
+# 编译输出（不跟踪）
 *.exe
+
+# 快速入门指南 PDF 不进 git（用户本地生成）
+*.pdf
 
 # 临时文件
 *.tmp
 *.bak
 *.swp
-
-# 快速入门指南 PDF 不进 git（用户本地生成）
-*.pdf
 
 # 开发者测试文件
 *副本*

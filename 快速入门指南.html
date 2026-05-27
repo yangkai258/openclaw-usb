@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenClaw U盘版 - 快速入门指南</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+  
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: 'Inter', 'Microsoft YaHei', -apple-system, sans-serif;
+    background: #fff;
+    color: #1a1a2e;
+    font-size: 14px;
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 48px;
+  }
+  
+  /* Header */
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid #1a1a2e;
+    margin-bottom: 32px;
+  }
+  
+  .logo {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #e94560, #0f3460);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 24px;
+    font-weight: 700;
+  }
+  
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a1a2e;
+  }
+  
+  .header p {
+    font-size: 13px;
+    color: #666;
+    margin-top: 2px;
+  }
+  
+  /* Sections */
+  .section {
+    margin-bottom: 28px;
+  }
+  
+  .section-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0f3460;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  /* Step cards */
+  .step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    align-items: flex-start;
+  }
+  
+  .step-num {
+    width: 32px;
+    height: 32px;
+    background: #e94560;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  
+  .step-content h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  
+  .step-content p {
+    color: #555;
+    font-size: 13px;
+  }
+  
+  .step-content code {
+    background: #f5f5f5;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: #e94560;
+  }
+  
+  .step-content a {
+    color: #0f3460;
+    text-decoration: underline;
+  }
+  
+  /* Alert boxes */
+  .alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 13px;
+  }
+  
+  .alert-warning {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    color: #856404;
+  }
+  
+  .alert-info {
+    background: #d1ecf1;
+    border-left: 4px solid #17a2b8;
+    color: #0c5460;
+  }
+  
+  .alert-success {
+    background: #d4edda;
+    border-left: 4px solid #28a745;
+    color: #155724;
+  }
+  
+  /* Feature grid */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  
+  .feature-item {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .feature-icon {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #1a1a2e, #0f3460);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  
+  .feature-item h4 {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  
+  .feature-item p {
+    font-size: 11px;
+    color: #666;
+  }
+  
+  /* File tree */
+  .file-tree {
+    background: #1a1a2e;
+    color: #a0aec0;
+    padding: 16px 20px;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    line-height: 1.8;
+    overflow-x: auto;
+  }
+  
+  .file-tree .visible {
+    color: #fff;
+    font-weight: 600;
+  }
+  
+  .file-tree .hidden {
+    color: #4a5568;
+  }
+  
+  /* Table */
+  .pricing-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  
+  .pricing-table th,
+  .pricing-table td {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .pricing-table th {
+    background: #1a1a2e;
+    color: #fff;
+    font-weight: 600;
+  }
+  
+  .pricing-table tr:nth-child(even) {
+    background: #f8f9fa;
+  }
+  
+  .pricing-table .highlight {
+    color: #e94560;
+    font-weight: 600;
+  }
+  
+  /* Footer */
+  .footer {
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 2px solid #1a1a2e;
+    text-align: center;
+    font-size: 12px;
+    color: #888;
+  }
+  
+  /* Print overrides */
+  @media print {
+    body { padding: 0; }
+    .step { page-break-inside: avoid; }
+    .alert { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">🦞</div>
+  <div>
+    <h1>OpenClaw U盘便携版</h1>
+    <p>version 1.0 · 插上即用 · 带走即走</p>
+  </div>
+</div>
+
+<!-- Section 1: What's this -->
+<div class="section">
+  <div class="section-title">这是什么？</div>
+  <p>OpenClaw U盘版，把AI助手装进U盘。插到任意Windows电脑，插上就能用，拔走就带走。所有数据跟着U盘走，不留痕迹。</p>
+</div>
+
+<!-- Section 2: Quick Start -->
+<div class="section">
+  <div class="section-title">30秒快速上手</div>
+  
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <h3>插入U盘，运行 OpenClaw.exe</h3>
+      <p>双击 <code>OpenClaw.exe</code>，等待启动（约5-10秒）</p>
+    </div>
+  </div>
+  
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <h3>首次使用需要激活账号</h3>
+      <p>如果没有账号，先打开平台注册：<a href="http://3295b30e.r8.cpolar.cn" target="_blank">http://3295b30e.r8.cpolar.cn</a></p>
+    </div>
+  </div>
+  
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <h3>获取API Key并填入激活页面</h3>
+      <p>注册账号 → 充值额度 → 在后台获取 API Key → 填入激活页面 → 点击"验证并启动"</p>
+    </div>
+  </div>
+  
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-content">
+      <h3>开始使用！</h3>
+      <p>浏览器会自动打开 <code>http://127.0.0.1:8080</code>，看到OpenClaw界面即为成功 ✅</p>
+    </div>
+  </div>
+</div>
+
+<!-- Section 3: Alrets -->
+<div class="alert alert-warning">
+  ⚠️ <strong>安全拔出：</strong>每次使用完毕，点击「彻底退出软件.exe」等待提示"可以安全拔出U盘了"后再拔盘，避免数据损坏。
+</div>
+
+<div class="alert alert-info">
+  💡 <strong>免激活：</strong>如果下次在同一台电脑使用，直接运行 <code>OpenClaw.exe</code> 即可，无需再次激活。API Key已保存在U盘中。
+</div>
+
+<!-- Section 4: Tools -->
+<div class="section">
+  <div class="section-title">4个工具说明</div>
+  
+  <div class="feature-grid">
+    <div class="feature-item">
+      <div class="feature-icon">▶</div>
+      <div>
+        <h4>OpenClaw.exe</h4>
+        <p>主程序入口，会自动检测是否有账号</p>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">🔑</div>
+      <div>
+        <h4>激活账号.exe</h4>
+        <p>重新打开激活页面（修改账号用）</p>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">🔧</div>
+      <div>
+        <h4>急救与重置工具.exe</h4>
+        <p>恢复出厂设置（配置损坏时用）</p>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">⏻</div>
+      <div>
+        <h4>彻底退出软件.exe</h4>
+        <p>关闭所有进程并提示安全拔盘</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Section 5: Directory -->
+<div class="section">
+  <div class="section-title">U盘目录结构</div>
+  <div class="file-tree">
+<span class="visible">OpenClaw.exe              ← 主程序（可见）</span>
+<span class="visible">激活账号.exe               ← 激活工具（可见）</span>
+<span class="visible">急救与重置工具.exe         ← 恢复工具（可见）</span>
+<span class="visible">彻底退出软件.exe           ← 退出工具（可见）</span>
+<span class="visible">快速入门指南.pdf           ← 本文件（可见）</span>
+<span class="visible">setup.js                  ← 激活页面服务（可见）</span>
+<span class="hidden">node/                     ← Node.js运行环境</span>
+<span class="hidden">openclaw/                 ← OpenClaw主程序</span>
+<span class="hidden">.openclaw/                ← 用户配置</span>
+<span class="hidden">.system/openclaw_normal/  ← 日常版配置</span>
+<span class="hidden">.system/openclaw_rescue/  ← 救援工具</span>
+<span class="hidden">.system/logs/             ← 日志目录</span>
+  </div>
+</div>
+
+<!-- Section 6: Pricing -->
+<div class="section">
+  <div class="section-title">Token 费用参考</div>
+  <table class="pricing-table">
+    <tr>
+      <th>操作</th>
+      <th>消耗</th>
+      <th>示例</th>
+    </tr>
+    <tr>
+      <td>发送一条消息</td>
+      <td>~500-2000 Token</td>
+      <td>一次对话 ≈ 0.05-0.2元</td>
+    </tr>
+    <tr>
+      <td>1元充值</td>
+      <td>约100万Token</td>
+      <td>≈ 500-2000次对话</td>
+    </tr>
+    <tr>
+      <td>日常使用</td>
+      <td class="highlight">每天约5-20元</td>
+      <td>按需使用，不浪费</td>
+    </tr>
+  </table>
+</div>
+
+<!-- Section 7: Troubleshooting -->
+<div class="section">
+  <div class="section-title">常见问题</div>
+  
+  <div class="step">
+    <div class="step-num">Q</div>
+    <div class="step-content">
+      <h3>提示"未找到 Node.js 运行环境"</h3>
+      <p>确保U盘根目录下的 <code>node/</code> 文件夹完整，没有被杀毒软件误删。</p>
+    </div>
+  </div>
+  
+  <div class="step">
+    <div class="step-num">Q</div>
+    <div class="step-content">
+      <h3>激活页面打不开</h3>
+      <p>检查 <code>.system/logs/error.log</code> 获取详细错误信息。也可尝试运行「激活账号.exe」手动打开。</p>
+    </div>
+  </div>
+  
+  <div class="step">
+    <div class="step-num">Q</div>
+    <div class="step-content">
+      <h3>API Key验证失败</h3>
+      <p>确认平台网址 <a href="http://3295b30e.r8.cpolar.cn">http://3295b30e.r8.cpolar.cn</a> 可以访问，且账号有充足余额。</p>
+    </div>
+  </div>
+  
+  <div class="step">
+    <div class="step-num">Q</div>
+    <div class="step-content">
+      <h3>配置损坏/无法启动</h3>
+      <p>运行「急救与重置工具.exe」，将配置恢复出厂状态，然后重新激活。</p>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  OpenClaw U盘便携版 · 由 OpenClaw 驱动 · 技术支持请联系管理员<br>
+  平台地址：http://3295b30e.r8.cpolar.cn
+</div>
+
+</body>
+</html>
