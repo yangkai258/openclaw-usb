@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -35,6 +36,15 @@ func winErrorBox(err error) {
 	os.Exit(1)
 }
 
+func isPortInUse(port string) bool {
+	conn, err := net.Listen("tcp", ":"+port)
+	if err != nil {
+		return true
+	}
+	conn.Close()
+	return false
+}
+
 func main() {
 	exePath := getExePath()
 	root := filepath.Dir(exePath)
@@ -48,6 +58,12 @@ func main() {
 		winErrorBox(fmt.Errorf("未找到 node.exe"))
 	}
 
+	// If port 8080 is already in use, server is already running — just open browser
+	if isPortInUse("8080") {
+		exec.Command("cmd", "/c", "start", "", "http://127.0.0.1:8080").Run()
+		return
+	}
+
 	cmd := exec.Command(nodeExe, setupJs)
 	cmd.Dir = root
 	cmd.SysProcAttr = &syscall.SysProcAttr{
@@ -58,7 +74,7 @@ func main() {
 	if err != nil {
 		winErrorBox(fmt.Errorf("启动激活页面失败: %v", err))
 	}
-	// setup.js 启动后会根据配置自动决定是否打开浏览器，不需要这里再调一次
+	// setup.js 启动后会根据配置自动决定是否打开浏览器
 }
 
 func fileExists(path string) bool {
