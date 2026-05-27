@@ -6,7 +6,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"syscall"
-	"time"
 	"unsafe"
 )
 
@@ -59,10 +58,7 @@ func main() {
 	if err != nil {
 		winErrorBox(fmt.Errorf("启动激活页面失败: %v", err))
 	}
-
-	// Wait for server to start, then open browser
-	time.Sleep(2 * time.Second)
-	exec.Command("cmd", "/c", "start", "", "http://127.0.0.1:8080").Run()
+	// setup.js 启动后会根据配置自动决定是否打开浏览器，不需要这里再调一次
 }
 
 func fileExists(path string) bool {
